@@ -10,12 +10,32 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
         sudo apt update
-        sudo apt install -y python3-pip zip unzip openjdk-17-jdk
+        sudo apt install -y python3-pip zip unzip openjdk-17-jdk wget
+
+    - name: Install Python dependencies
+      run: |
         pip install --upgrade pip
         pip install buildozer cython kivy
+
+    # 🔥 Install Android SDK tools manually
+    - name: Install Android SDK
+      run: |
+        mkdir -p $HOME/android-sdk
+        cd $HOME/android-sdk
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+        unzip commandlinetools-linux-9477386_latest.zip
+        mkdir -p cmdline-tools/latest
+        mv cmdline-tools/* cmdline-tools/latest/ || true
+
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
+
+    # 🔥 Accept licenses (NOW it works)
+    - name: Accept Licenses
+      run: yes | sdkmanager --licenses
 
     - name: Initialize buildozer
       run: buildozer init || true
@@ -26,10 +46,6 @@ jobs:
         sed -i 's/^package.name =.*/package.name = conecalc/' buildozer.spec
         sed -i 's/^# requirements =.*/requirements = python3,kivy/' buildozer.spec
         sed -i 's/^source.include_exts =.*/source.include_exts = py,kv/' buildozer.spec
-
-    # 🔥 IMPORTANT FIX
-    - name: Accept Android Licenses
-      run: yes | sdkmanager --licenses || true
 
     - name: Build APK
       run: buildozer android debug
