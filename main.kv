@@ -1,0 +1,61 @@
+BoxLayout:
+    orientation: "vertical"
+    padding: 10
+    spacing: 10
+
+    Spinner:
+        id: option
+        text: "Select Option"
+        values: ["Red Zebra", "Blue Zebra", "Rose Greedem", "Green Apple", "Green Star"]
+
+    TextInput:
+        id: a
+        hint_text: "Enter A"
+        input_filter: "int"
+
+    TextInput:
+        id: b
+        hint_text: "Enter B"
+        input_filter: "int"
+
+    TextInput:
+        id: c
+        hint_text: "Enter Steps (C)"
+        input_filter: "int"
+
+    TextInput:
+        id: d
+        hint_text: "Extra Value (D)"
+        input_filter: "int"
+
+    Button:
+        text: "Calculate"
+        size_hint_y: 0.2
+        on_press: root.calculate()
+
+    Label:
+        id: result
+        text: "Result"
+        size_hint_y: 0.2
+
+    TextInput:
+        id: extra
+        hint_text: "Add Extra Value"
+        input_filter: "int"
+
+    Button:
+        text: "Add Extra"
+        size_hint_y: 0.2
+        on_press: root.add_extra()
+
+    Button:
+        text: "Clear"
+        size_hint_y: 0.2
+        on_press: root.clear_fields()
+
+    ScrollView:
+        TextInput:
+            id: steps
+            readonly: True
+            size_hint_y: None
+            height: self.minimum_height
